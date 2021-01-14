@@ -1,4 +1,4 @@
-# Sample Works - Laravel Vuejs  Sample #
+# Sample Works - Laravel Rest Api Sample #
 This repository contains the Laravel 8 api with Advance Laravel Features
 
 ##Cloning

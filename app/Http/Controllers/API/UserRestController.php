@@ -15,6 +15,7 @@ use App\Http\Controllers\Service\RegisterService;
 use Validator;
 use Auth;
 use App\Models\Role;
+use App\Models\User;
 
 class UserRestController extends Controller
 {
@@ -38,20 +39,7 @@ class UserRestController extends Controller
         } 
         
         $this->currentUserRole = Role::find($this->user->role_id);
-        
-        switch($this->currentUserRole->slug){
-            case 'admin':
-                $this->response = $this->getUserAction($this->user->role_id);
-                break;
-            case 'manager':
-                $this->response = $this->getUserAction($this->user->id, $this->currentUserRole->id, $this->currentUserRole->slug);
-                break;
-            default:
-                $this->response = $this->getUserAction($this->user->id, $this->currentUserRole->id, $this->currentUserRole->slug);
-                break;    
-
-        }
-        
+        $this->response = $this->getUserAction($this->user->role_id,$this->currentUserRole->id, $this->currentUserRole->slug);
         return response()->json(['data' => $this->response, 'success' => true,
              'message' => 'User list fetch successfully.', 'code' => Response::HTTP_OK,  ], Response::HTTP_OK);
 
@@ -59,12 +47,14 @@ class UserRestController extends Controller
 
     /**
      * This return User list 
+     * @param userid
+     * @param role
+     * @param slug
      * @return list
      */
     private function getUserAction($user_id , $current_role_id, $current_role_slug ) {
         $this->query = ($current_role_slug == 'admin') ? User::where('role_id' ,'>=' , $current_role_id) :  User::where('role_id', '>', $current_role_id);
         return $this->query->get();
-        
     }
 
     public function login(Request $request)
